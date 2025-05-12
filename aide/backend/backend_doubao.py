@@ -56,7 +56,11 @@ def query(
     t0 = time.time()
     # print(f"----DOUBAO Querying----")
     logger.info(f"----DOUBAO Querying----")
-
+    # 应该是用于保证传入了一部分tools
+    if func_spec is not None:
+        filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
+        # force the model the use the function
+        filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
     completion = backoff_create(
         _client.chat.completions.create,
         OPENAI_TIMEOUT_EXCEPTIONS,
@@ -72,6 +76,7 @@ def query(
     )
     choice = completion.choices[0]
     req_time = time.time() - t0
+    print(f"func_spec:{func_spec}")
     if func_spec is None:
         output = choice.message.content
     else:
