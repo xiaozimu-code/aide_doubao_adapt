@@ -62,7 +62,7 @@ def query(
         _client.chat.completions.create,
         OPENAI_TIMEOUT_EXCEPTIONS,
         messages=messages,
-        model="ep-20250122135449-rhvk6",  # TODO 先写死之后找修改为传入
+        # model="ep-20250122135449-rhvk6",  # TODO 先写死之后找修改为传入
         extra_body={
             "provider": {
                 "order": ["Fireworks"],
