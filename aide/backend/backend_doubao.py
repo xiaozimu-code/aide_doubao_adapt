@@ -47,7 +47,7 @@ def query(
 
     if func_spec is not None:
         raise NotImplementedError(
-            "We are not supporting function calling in DouBao for now."
+            f"We are not supporting function calling in DouBao for now.\nfunc_spec:{func_spec}"
         )
 
     # in case some backends dont support system roles, just convert everything to user
