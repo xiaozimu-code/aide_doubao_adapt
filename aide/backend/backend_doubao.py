@@ -3,7 +3,7 @@
 import logging
 import os
 import time
-
+import json
 from funcy import notnone, once, select_values
 import openai
 
@@ -46,12 +46,6 @@ def query(
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
     print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
-    # func_spec不在query处使用,且会在此处中断流程,先注释掉
-    # if func_spec is not None:
-    #     raise NotImplementedError(
-    #         f"We are not supporting function calling in DouBao for now.\nfunc_spec:{func_spec}"
-    #     )
-
     # in case some backends dont support system roles, just convert everything to user
     messages = [
         {"role": "user", "content": message}
@@ -76,7 +70,24 @@ def query(
         },
         **filtered_kwargs,
     )
+    choice = completion.choices[0]
     req_time = time.time() - t0
+    if func_spec is None:
+        output = choice.message.content
+    else:
+        assert (
+            choice.message.tool_calls
+        ), f"function_call is empty, it is not a function call: {choice.message}"
+        assert (
+            choice.message.tool_calls[0].function.name == func_spec.name
+        ), "Function name mismatch"
+        try:
+            output = json.loads(choice.message.tool_calls[0].function.arguments)
+        except json.JSONDecodeError as e:
+            logger.error(
+                f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}"
+            )
+            raise e
 
     output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
