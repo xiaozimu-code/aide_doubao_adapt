@@ -26,7 +26,7 @@ OPENAI_TIMEOUT_EXCEPTIONS = (
 
 
 @once
-def _setup_openrouter_client():
+def _setup_doubao_client():
     global _client
     _client = openai.OpenAI(
         base_url="https://ark-cn-beijing.bytedance.net/api/v3",
@@ -42,9 +42,9 @@ def query(
     convert_system_to_user: bool = False,
     **model_kwargs,
 ) -> tuple[OutputType, float, int, int, dict]:
-    _setup_openrouter_client()
+    _setup_doubao_client()
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
-
+    print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     if func_spec is not None:
         raise NotImplementedError(
             f"We are not supporting function calling in DouBao for now.\nfunc_spec:{func_spec}"
