@@ -60,7 +60,7 @@ def query(
     ]
 
     t0 = time.time()
-    print(f"----DOUBAO Querying----")
+    # print(f"----DOUBAO Querying----")
     logger.info(f"----DOUBAO Querying----")
 
     completion = backoff_create(
@@ -79,7 +79,7 @@ def query(
     req_time = time.time() - t0
 
     output = completion.choices[0].message.content
-    print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
+    # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
 
     in_tokens = completion.usage.prompt_tokens
