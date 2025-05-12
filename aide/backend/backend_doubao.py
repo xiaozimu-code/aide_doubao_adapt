@@ -45,10 +45,12 @@ def query(
     _setup_doubao_client()
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
     print(f"filtered_kwargs:\n{filtered_kwargs}\n")
-    if func_spec is not None:
-        raise NotImplementedError(
-            f"We are not supporting function calling in DouBao for now.\nfunc_spec:{func_spec}"
-        )
+    # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
+    # func_spec不在query处使用,且会在此处中断流程,先注释掉
+    # if func_spec is not None:
+    #     raise NotImplementedError(
+    #         f"We are not supporting function calling in DouBao for now.\nfunc_spec:{func_spec}"
+    #     )
 
     # in case some backends dont support system roles, just convert everything to user
     messages = [
