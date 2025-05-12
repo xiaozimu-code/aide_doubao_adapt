@@ -89,7 +89,7 @@ def query(
             )
             raise e
 
-    output = completion.choices[0].message.content
+    # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
 
