@@ -55,6 +55,7 @@ def query(
 
     t0 = time.time()
     # print(f"----DOUBAO Querying----")
+    logger.info(f"func_spec:{func_spec}")
     logger.info(f"----DOUBAO Querying----")
     # 应该是用于保证传入了一部分tools
     if func_spec is not None:
@@ -76,7 +77,6 @@ def query(
     )
     choice = completion.choices[0]
     req_time = time.time() - t0
-    print(f"func_spec:{func_spec}")
     if func_spec is None:
         output = choice.message.content
     else:
