@@ -426,13 +426,10 @@ class Agent:
                 convert_system_to_user=self.acfg.convert_system_to_user,
             ),
         )
-        print(f"Moedl Response:{response}\n{type(response)}")
+        logger.info(f"Moedl Response:{response}\n{type(response)}")
         # if the metric isn't a float then fill the metric with the worst metric
         if not isinstance(response["metric"], float):
             response["metric"] = None
-            print(f"Model Response metric is None")
-        else:
-            print(f"Moedl Response metric:{response["metric"]}")
         # do an extra check, to catch cases where judge fails
         has_csv_submission = (
             self.cfg.workspace_dir / "submission" / "submission.csv"
