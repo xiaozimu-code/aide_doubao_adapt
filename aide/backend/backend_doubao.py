@@ -96,7 +96,7 @@ def query(
 
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
-    logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
+    # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
 
     in_tokens = completion.usage.prompt_tokens
     out_tokens = completion.usage.completion_tokens
