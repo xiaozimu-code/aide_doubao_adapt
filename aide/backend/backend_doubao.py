@@ -30,7 +30,7 @@ def _setup_doubao_client():
     global _client
     _client = openai.OpenAI(
         base_url="https://ark-cn-beijing.bytedance.net/api/v3",
-        api_key=os.getenv("DOUBAO_API_KEY"),  # TODO dockerfile中先写死一个环境变量
+        api_key=os.getenv("DOUBAO_API_KEY"),  # TODO dockerfile中先写死一个环境变量 / agent/utils.py os.environ
         max_retries=0,
     )
 
@@ -65,7 +65,7 @@ def query(
         _client.chat.completions.create,
         OPENAI_TIMEOUT_EXCEPTIONS,
         messages=messages,
-        # model="ep-20250122135449-rhvk6",  # TODO 先写死之后找修改为传入
+        # model="ep-20250122135449-rhvk6",  # 通过config传
         extra_body={
             "provider": {
                 "order": ["Fireworks"],
@@ -85,12 +85,12 @@ def query(
         ), f"function_call is empty, it is not a function call: {choice.message}"
         assert (
             choice.message.tool_calls[0].function.name == func_spec.name
-        ), "Function name mismatch"
+        ), "Function name mismatch:\nchoice.message.tool_calls[0]"
         try:
             output = json.loads(choice.message.tool_calls[0].function.arguments)
         except json.JSONDecodeError as e:
             logger.error(
-                f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}"
+                f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
 
