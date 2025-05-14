@@ -93,7 +93,7 @@ def query(
                 f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
-
+    logger.info(f"Doubao Query:\n{messages}\nDoubao Response:\n{output}")
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
