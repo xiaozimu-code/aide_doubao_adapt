@@ -47,7 +47,7 @@ def query(
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
     if filtered_kwargs["model"] == "o1":   # o1 not support temperature
         filtered_kwargs.pop("temperature")
-        filtered_kwargs["max_tokens"] = 65536  
+        filtered_kwargs["max_tokens"] = 81920  # max=10W
     print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
     # in case some backends dont support system roles, just convert everything to user
