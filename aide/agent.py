@@ -426,7 +426,7 @@ class Agent:
                 convert_system_to_user=self.acfg.convert_system_to_user,
             ),
         )
-        logger.info(f"Moedl Response:{response}\n{type(response)}")
+        logger.info(f"Model Response:{response}\n{type(response)}")
         # if the metric isn't a float then fill the metric with the worst metric
         if not isinstance(response["metric"], float):
             response["metric"] = None

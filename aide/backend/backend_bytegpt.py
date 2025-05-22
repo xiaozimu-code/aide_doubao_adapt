@@ -31,7 +31,7 @@ def _setup_BYTE_GPT_client():
     _client = openai.AzureOpenAI(
         api_version="2024-10-21",
         azure_endpoint="https://search-va.byteintl.net/gpt/openapi/online/v2/crawl",
-        api_key=os.getenv("BYTE_GPT_API_KEY"),  # TODO agent/utils.py os.environ --> Dockerfile
+        api_key=os.getenv("BYTE_GPT_API_KEY"),  
         max_retries=0,
     )
 
@@ -55,7 +55,6 @@ def query(
     ]
 
     t0 = time.time()
-    # print(f"----BYTE_GPT Querying----")
     logger.info(f"func_spec:{func_spec}")
     logger.info(f"----BYTE_GPT Querying----")
     # 应该是用于保证传入了一部分tools
@@ -63,11 +62,12 @@ def query(
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
+
+    logger.info(f"BYTE_GPT Query:\n{messages}\n")
     completion = backoff_create(
         _client.chat.completions.create,
         OPENAI_TIMEOUT_EXCEPTIONS,
         messages=messages,
-        # model="ep-20250122135449-rhvk6",  # 通过config传
         extra_body={
             "provider": {
                 "order": ["Fireworks"],
@@ -94,10 +94,7 @@ def query(
                 f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
-    logger.info(f"BYTE_GPT Query:\n{messages}\nBYTE_GPT Response:\n{output}")
-    # output = completion.choices[0].message.content
-    # print(f"----BYTE_GPT Response:{output}\ntype:{type(output)}----")
-    # logger.info(f"----BYTE_GPT Response:{output}\ntype:{type(output)}----")
+    logger.info("BYTE_GPT Response:\n{output}")
 
     in_tokens = completion.usage.prompt_tokens
     out_tokens = completion.usage.completion_tokens

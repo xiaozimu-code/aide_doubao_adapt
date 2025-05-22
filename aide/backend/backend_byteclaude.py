@@ -1,4 +1,4 @@
-"""Backend for OpenRouter(DOUBAO) API"""
+"""Backend for OpenRouter(BYTE_CLAUDE) API"""
 
 import logging
 import os
@@ -26,11 +26,12 @@ OPENAI_TIMEOUT_EXCEPTIONS = (
 
 
 @once
-def _setup_doubao_client():
+def _setup_BYTE_CLAUDE_client():
     global _client
-    _client = openai.OpenAI(
-        base_url="https://ark-cn-beijing.bytedance.net/api/v3",
-        api_key=os.getenv("DOUBAO_API_KEY"),
+    _client = openai.AzureOpenAI(
+        api_version="2024-10-21",
+        azure_endpoint="https://search-va.byteintl.net/gpt/openapi/online/v2/crawl",
+        api_key=os.getenv("BYTE_CLAUDE_API_KEY"),  
         max_retries=0,
     )
 
@@ -42,7 +43,7 @@ def query(
     convert_system_to_user: bool = False,
     **model_kwargs,
 ) -> tuple[OutputType, float, int, int, dict]:
-    _setup_doubao_client()
+    _setup_BYTE_CLAUDE_client()
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
     print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
@@ -54,9 +55,10 @@ def query(
     ]
 
     t0 = time.time()
-    # print(f"----DOUBAO Querying----")
+    # print(f"----BYTE_CLAUDE Querying----")
     logger.info(f"func_spec:{func_spec}")
-    logger.info(f"----DOUBAO Querying----")
+    # logger.info(f"----BYTE_CLAUDE Querying----")
+    logger.info(f"BYTE_CLAUDE Query:\n{messages}\n")
     # 应该是用于保证传入了一部分tools
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
@@ -66,7 +68,6 @@ def query(
         _client.chat.completions.create,
         OPENAI_TIMEOUT_EXCEPTIONS,
         messages=messages,
-        # model="ep-20250122135449-rhvk6",  # 通过config传
         extra_body={
             "provider": {
                 "order": ["Fireworks"],
@@ -93,10 +94,10 @@ def query(
                 f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
-    logger.info(f"Doubao Query:\n{messages}\nDoubao Response:\n{output}")
+    logger.info(f"BYTE_CLAUDE Response:\n{output}")
     # output = completion.choices[0].message.content
-    # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
-    # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
+    # print(f"----BYTE_CLAUDE Response:{output}\ntype:{type(output)}----")
+    # logger.info(f"----BYTE_CLAUDE Response:{output}\ntype:{type(output)}----")
 
     in_tokens = completion.usage.prompt_tokens
     out_tokens = completion.usage.completion_tokens
