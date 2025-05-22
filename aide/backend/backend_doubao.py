@@ -57,7 +57,7 @@ def query(
     # print(f"----DOUBAO Querying----")
     logger.info(f"func_spec:{func_spec}")
     logger.info(f"----DOUBAO Querying----")
-    # 应该是用于保证传入了一部分tools
+    logger.info(f"Doubao Query:\n{messages}\n")
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
@@ -76,6 +76,7 @@ def query(
         **filtered_kwargs,
     )
     choice = completion.choices[0]
+    logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
     if func_spec is None:
         output = choice.message.content
@@ -93,7 +94,7 @@ def query(
                 f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
-    logger.info(f"Doubao Query:\n{messages}\nDoubao Response:\n{output}")
+    logger.info(f"Doubao Response:\n{output}")
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")

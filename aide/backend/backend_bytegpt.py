@@ -60,7 +60,6 @@ def query(
     t0 = time.time()
     logger.info(f"func_spec:{func_spec}")
     logger.info(f"----BYTE_GPT Querying----")
-    # 应该是用于保证传入了一部分tools
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function

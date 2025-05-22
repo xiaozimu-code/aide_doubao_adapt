@@ -59,7 +59,6 @@ def query(
     logger.info(f"func_spec:{func_spec}")
     # logger.info(f"----BYTE_CLAUDE Querying----")
     logger.info(f"BYTE_CLAUDE Query:\n{messages}\n")
-    # 应该是用于保证传入了一部分tools
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
@@ -77,6 +76,7 @@ def query(
         **filtered_kwargs,
     )
     choice = completion.choices[0]
+    logger.info(f"Response choice:{choice}")
     logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
     if func_spec is None:
