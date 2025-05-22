@@ -96,7 +96,7 @@ def query(
                 f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
-    logger.info("BYTE_GPT Response:\n{output}")
+    logger.info(f"BYTE_GPT Response:\n{output}")
 
     in_tokens = completion.usage.prompt_tokens
     out_tokens = completion.usage.completion_tokens
