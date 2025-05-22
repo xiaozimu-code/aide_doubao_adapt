@@ -45,6 +45,8 @@ def query(
 ) -> tuple[OutputType, float, int, int, dict]:
     _setup_BYTE_GPT_client()
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
+    if filtered_kwargs["model"] == "o1":   # o1 not support temperature
+        filtered_kwargs.pop("temperature")
     print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
     # in case some backends dont support system roles, just convert everything to user
