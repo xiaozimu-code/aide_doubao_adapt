@@ -29,7 +29,7 @@ OPENAI_TIMEOUT_EXCEPTIONS = (
 def _setup_BYTE_CLAUDE_client():
     global _client
     _client = openai.OpenAI(
-        azure_endpoint="https://openrouter.ai/api/v1",
+        base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("BYTE_CLAUDE_API_KEY"),  
         max_retries=0,
     )
