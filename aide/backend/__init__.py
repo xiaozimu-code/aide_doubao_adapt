@@ -17,7 +17,7 @@ def determine_provider(model: str) -> str:
         return "gdm"
     elif model.startswith("ep"):  # ep-20250122135449-rhvk6
         return "doubao"
-    elif model.startswith("aws"):
+    elif model.startswith("anthropic"):
         return "byteclaude"
     # all other models are handle by openrouter
     else:

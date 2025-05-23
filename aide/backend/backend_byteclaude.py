@@ -28,9 +28,8 @@ OPENAI_TIMEOUT_EXCEPTIONS = (
 @once
 def _setup_BYTE_CLAUDE_client():
     global _client
-    _client = openai.AzureOpenAI(
-        api_version="2024-10-21",
-        azure_endpoint="https://search-va.byteintl.net/gpt/openapi/online/v2/crawl",
+    _client = openai.Openai(
+        azure_endpoint="https://openrouter.ai/api/v1",
         api_key=os.getenv("BYTE_CLAUDE_API_KEY"),  
         max_retries=0,
     )
@@ -45,6 +44,7 @@ def query(
 ) -> tuple[OutputType, float, int, int, dict]:
     _setup_BYTE_CLAUDE_client()
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
+    filtered_kwargs["max_tokens"]=32768
     print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
     # in case some backends dont support system roles, just convert everything to user
