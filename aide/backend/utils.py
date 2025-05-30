@@ -41,7 +41,7 @@ def clean_and_convert(response_dict):
     return ChatCompletion.model_validate(response_dict)
 
 def backoff_create_api(base_url,api_key,model_params):
-    url = "http://127.0.0.1:8000/call_model_api"
+    url = "http://10.79.254.6//call_model_api"
     try:
         response = requests.post(url=url,json={"base_url":base_url,"api_key":api_key,"model_params":model_params},timeout=1200)
         completion = (response.json())["data"]
