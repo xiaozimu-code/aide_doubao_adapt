@@ -1,9 +1,10 @@
 import logging
 from dataclasses import dataclass
 from typing import Callable
-
 import jsonschema
 from dataclasses_json import DataClassJsonMixin
+import requests
+from openai.types.chat import ChatCompletion
 
 PromptType = str | dict | list
 FunctionCallType = dict
@@ -28,6 +29,27 @@ def backoff_create(
         logger.info(f"Backoff exception: {e}")
         return False
 
+
+def clean_and_convert(response_dict):
+    """清理并转换字典为 ChatCompletion 对象"""
+    # 处理可能为 None 的 index 字段
+    if 'choices' in response_dict:
+        for i, choice in enumerate(response_dict['choices']):
+            if choice.get('index') is None:
+                choice['index'] = i
+    
+    return ChatCompletion.model_validate(response_dict)
+
+def backoff_create_api(base_url,api_key,model_params):
+    url = "http://127.0.0.1:8000/call_model_api"
+    try:
+        response = requests.post(url=url,json={"base_url":base_url,"api_key":api_key,"model_params":model_params},timeout=1200)
+        completion = (response.json())["data"]
+        chat_completion = clean_and_convert(completion)
+    except Exception as e:
+        logger.info(f"Backoff exception: {e}")
+        return False
+    return chat_completion
 
 def opt_messages_to_list(
     system_message: str | None,

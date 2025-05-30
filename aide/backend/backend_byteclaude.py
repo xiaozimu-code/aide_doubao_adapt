@@ -27,7 +27,7 @@ OPENAI_TIMEOUT_EXCEPTIONS = (
 
 @once
 def _setup_BYTE_CLAUDE_client():
-    global _client
+    global _client 
     _client = openai.OpenAI(
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("BYTE_CLAUDE_API_KEY"),  
