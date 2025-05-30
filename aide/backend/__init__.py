@@ -29,7 +29,8 @@ provider_to_query_func = {
     "anthropic": backend_anthropic.query,
     "gdm": backend_gdm.query,
     "openrouter": backend_openrouter.query,
-    "doubao": backend_doubao.query,
+    # "doubao": backend_doubao.query,
+    "doubao": backend_doubao.new_query,
     "bytegpt": backend_bytegpt.query,
     "byteclaude": backend_byteclaude.query,
 }
