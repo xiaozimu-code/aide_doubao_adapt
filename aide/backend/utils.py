@@ -49,7 +49,7 @@ def backoff_create_api(base_url,api_key,model_params):
         ["sh", "-c", "ip route | awk '/default/ {print $3}'"]
     ).decode().strip()
     logger.info(f"get host url :\n{host_url}")
-    health_resp = requests.get(url = f"http://host.docker.internal:8192/health")
+    health_resp = requests.get(url = f"http://{host_url}:8192/health")
     logger.info(f"forward server status \n{health_resp.text}")
     url = f"http://{host_url}:8192/call_model_api"
     try:
