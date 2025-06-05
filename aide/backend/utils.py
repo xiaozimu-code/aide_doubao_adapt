@@ -46,6 +46,7 @@ def backoff_create_api(base_url,api_key,model_params):
     url = "http://10.35.136.75:8192//call_model_api"
     try:
         response = requests.post(url=url,json={"model_params":model_params},timeout=2700)
+        logger.info(response.text)
         completion = (response.json())["data"]
         chat_completion = clean_and_convert(completion)
     except Exception as e:
