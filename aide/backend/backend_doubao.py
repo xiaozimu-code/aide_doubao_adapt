@@ -148,7 +148,7 @@ def new_query(
                 "ignore": ["Together", "DeepInfra", "Hyperbolic"],
             },
         },**filtered_kwargs}
-    )
+    )   
     choice = completion.choices[0]
     logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0

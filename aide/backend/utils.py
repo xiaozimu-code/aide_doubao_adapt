@@ -5,6 +5,7 @@ import jsonschema
 from dataclasses_json import DataClassJsonMixin
 import requests
 from openai.types.chat import ChatCompletion
+import traceback
 
 PromptType = str | dict | list
 FunctionCallType = dict
@@ -29,7 +30,7 @@ def backoff_create(
         logger.info(f"Backoff exception: {e}")
         return False
 
-
+# 清理传递的字典 反序列化回openai的对象
 def clean_and_convert(response_dict):
     """清理并转换字典为 ChatCompletion 对象"""
     # 处理可能为 None 的 index 字段
@@ -40,14 +41,16 @@ def clean_and_convert(response_dict):
     
     return ChatCompletion.model_validate(response_dict)
 
+# 与容器外通信传递Query Answer
 def backoff_create_api(base_url,api_key,model_params):
-    url = "http://10.79.254.6:8000//call_model_api"
+    url = "http://10.35.136.75:8192//call_model_api"
     try:
-        response = requests.post(url=url,json={"base_url":base_url,"api_key":api_key,"model_params":model_params},timeout=1200)
+        response = requests.post(url=url,json={"model_params":model_params},timeout=2700)
         completion = (response.json())["data"]
         chat_completion = clean_and_convert(completion)
     except Exception as e:
         logger.info(f"Backoff exception: {e}")
+        logger.info(f"{traceback.format_exc()}")
         return False
     return chat_completion
 
