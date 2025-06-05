@@ -7,6 +7,7 @@ import json
 from funcy import notnone, once, select_values
 import openai
 
+
 from aide.backend.utils import (
     FunctionSpec,
     OutputType,
@@ -139,6 +140,7 @@ def new_query(
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
+
     completion = backoff_create_api(
         base_url="https://ark-cn-beijing.bytedance.net/api/v3",
         api_key=os.getenv("DOUBAO_API_KEY"),

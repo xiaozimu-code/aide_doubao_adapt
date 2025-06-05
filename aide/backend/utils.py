@@ -6,7 +6,8 @@ from dataclasses_json import DataClassJsonMixin
 import requests
 from openai.types.chat import ChatCompletion
 import traceback
-
+import subprocess
+import shlex
 PromptType = str | dict | list
 FunctionCallType = dict
 OutputType = str | FunctionCallType
@@ -43,7 +44,14 @@ def clean_and_convert(response_dict):
 
 # 与容器外通信传递Query Answer
 def backoff_create_api(base_url,api_key,model_params):
-    url = "http://10.0.0.1:8192/call_model_api"
+     
+    host_url = subprocess.check_output(
+        shlex.split("ip route | awk '/default/ {print $3}'")
+     ).decode().strip()
+    logger.info(f"get host url :\n{host_url}")
+    health_resp = requests.get(url = f"http://{host_url}:8192/health")
+    logger.info(f"forward server status \n{health_resp.text}")
+    url = f"http://{host_url}:8192/call_model_api"
     try:
         response = requests.post(url=url,json={"model_params":model_params},timeout=2700)
         logger.info(f"forward response:\n{response.text}")
