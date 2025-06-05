@@ -43,10 +43,10 @@ def clean_and_convert(response_dict):
 
 # 与容器外通信传递Query Answer
 def backoff_create_api(base_url,api_key,model_params):
-    url = "http://192.168.16.1:8192/call_model_api"
+    url = "http://10.0.0.1:8192/call_model_api"
     try:
         response = requests.post(url=url,json={"model_params":model_params},timeout=2700)
-        logger.info(response.text)
+        logger.info(f"forward response:\n{response.text}")
         completion = (response.json())["data"]
         chat_completion = clean_and_convert(completion)
     except Exception as e:
