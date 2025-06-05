@@ -46,7 +46,7 @@ def clean_and_convert(response_dict):
 def backoff_create_api(base_url,api_key,model_params):
      
     host_url = subprocess.check_output(
-        shlex.split("ip route | awk '/default/ {print $3}'")
+        shlex.split(r"ip route | awk '/default/ {print $3}'"),shell=True
      ).decode().strip()
     logger.info(f"get host url :\n{host_url}")
     health_resp = requests.get(url = f"http://{host_url}:8192/health")
