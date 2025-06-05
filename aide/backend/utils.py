@@ -50,7 +50,7 @@ def backoff_create_api(base_url,api_key,model_params):
     ).decode().strip()
     logger.info(f"get host url :\n{host_url}")
     health_resp = requests.get(url = f"http://{host_url}:8192/health")
-    health_resp2 = requests.get(url="http://[2605:340:cd50:f0b:1180:7b23:bb03:55f9]:8192/health") 
+    health_resp2 = requests.get(url="http://[2001:db8:1::1]:8192/health") 
     logger.info(f"forward server status \n{health_resp.text}")
     logger.info(f"forward server ipv6 status \n{health_resp2.text}")
     url = f"http://{host_url}:8192/call_model_api"
