@@ -43,7 +43,7 @@ def clean_and_convert(response_dict):
 
 # 与容器外通信传递Query Answer
 def backoff_create_api(base_url,api_key,model_params):
-    url = "http://10.35.136.75:8192/call_model_api"
+    url = "http://192.168.16.1:8192/call_model_api"
     try:
         response = requests.post(url=url,json={"model_params":model_params},timeout=2700)
         logger.info(response.text)
