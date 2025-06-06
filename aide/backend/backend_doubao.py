@@ -6,7 +6,7 @@ import time
 import json
 from funcy import notnone, once, select_values
 import openai
-
+import pydantic
 
 from aide.backend.utils import (
     FunctionSpec,
@@ -140,7 +140,8 @@ def new_query(
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
-        
+    logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
+
     model_params={"messages":messages,"extra_body":{
             "provider": {
                 "order": ["Fireworks"],
@@ -155,6 +156,8 @@ def new_query(
         # api_key=os.getenv("DOUBAO_API_KEY"),
         model_params=model_params
     )   
+    api_response = completion.model_validate()
+    logger.info(f"api_response:\n{api_response}")
     choice = completion.choices[0]
     logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
