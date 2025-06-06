@@ -181,7 +181,8 @@ def new_query(
         except json.JSONDecodeError as e:
             logger.error(
                 # f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
-                f"Error decoding the function arguments: {completion["tool_calls"][0].function.arguments}\ntype:{type(completion["tool_calls"][0].function.arguments)}"
+                tool_type = type({completion["tool_calls"][0].function.arguments})
+                f"Error decoding the function arguments: {completion["tool_calls"][0].function.arguments}\ntype:{tool_type}"
             )
             raise e
     logger.info(f"Doubao Response:\n{output}")
