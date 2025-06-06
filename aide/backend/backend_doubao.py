@@ -156,25 +156,32 @@ def new_query(
         # api_key=os.getenv("DOUBAO_API_KEY"),
         model_params=model_params
     )   
-    api_response = completion.model_validate()
-    logger.info(f"api_response:\n{api_response}")
-    choice = completion.choices[0]
-    logger.info(f"Response choice:{choice}")
+
+    logger.info(f"api_response:\n{completion}\ntype:{type(completion)}")
+    # choice = completion.choices[0]
+    # logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
     if func_spec is None:
-        output = choice.message.content
+        # output = choice.message.content
+        output = completion["content"]
     else:
         assert (
-            choice.message.tool_calls
-        ), f"function_call is empty, it is not a function call: {choice.message}"
+            # choice.message.tool_calls
+            completion["tool_calls"]
+        # ), f"function_call is empty, it is not a function call: {choice.message}"
+        ), f"function_call is empty, it is not a function call: {completion}"
+
         assert (
-            choice.message.tool_calls[0].function.name == func_spec.name
+            # choice.message.tool_calls[0].function.name == func_spec.name
+            completion["tool_calls"][0]
         ), "Function name mismatch:\nchoice.message.tool_calls[0]"
         try:
-            output = json.loads(choice.message.tool_calls[0].function.arguments)
+            # output = json.loads(choice.message.tool_calls[0].function.arguments)
+            output = json.loads(completion["tool_calls"][0].function.arguments)
         except json.JSONDecodeError as e:
             logger.error(
-                f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
+                # f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
+                f"Error decoding the function arguments: {completion["tool_calls"][0].function.arguments}\ntype:{type(completion["tool_calls"][0].function.arguments)}"
             )
             raise e
     logger.info(f"Doubao Response:\n{output}")
