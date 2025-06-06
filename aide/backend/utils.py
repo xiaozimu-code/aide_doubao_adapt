@@ -15,6 +15,7 @@ OutputType = str | FunctionCallType
 import backoff
 from enum import Enum
 from pydantic import BaseModel, root_validator
+from typing import Union, List, Dict, Any, Optional
 
 class AgentOutputStatus(str, Enum):
     NORMAL = "normal"
