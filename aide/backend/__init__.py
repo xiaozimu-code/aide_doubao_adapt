@@ -62,11 +62,12 @@ def query(
         OutputType: A string completion if func_spec is None, otherwise a dict with the function call details.
     """
 
-    model_kwargs = model_kwargs | {
-        "model": model,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-    }
+    # merlin用不到
+    # model_kwargs = model_kwargs | {
+    #     "model": model,
+    #     "temperature": temperature,
+    #     "max_tokens": max_tokens,
+    # }
 
     logger.info("---Querying model---", extra={"verbose": True})
     system_message = compile_prompt_to_md(system_message) if system_message else None
