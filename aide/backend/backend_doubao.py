@@ -122,7 +122,7 @@ def new_query(
 ) -> tuple[OutputType, float, int, int, dict]:
     # _setup_doubao_client()
     filtered_kwargs: dict = select_values(notnone, model_kwargs)  # type: ignore
-    print(f"filtered_kwargs:\n{filtered_kwargs}\n")
+    # print(f"filtered_kwargs:\n{filtered_kwargs}\n")
     # logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
     # in case some backends dont support system roles, just convert everything to user
     messages = [
@@ -135,21 +135,25 @@ def new_query(
     # print(f"----DOUBAO Querying----")
     logger.info(f"func_spec:{func_spec}")
     logger.info(f"----DOUBAO Querying----")
-    logger.info(f"Doubao Query:\n{messages}\n")
+    # logger.info(f"Doubao Query:\n{messages}\n")
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
-
-    completion = backoff_create_api(
-        # base_url="https://ark-cn-beijing.bytedance.net/api/v3",
-        # api_key=os.getenv("DOUBAO_API_KEY"),
-        model_params={"messages":messages,"extra_body":{
+        
+    model_params={"messages":messages,"extra_body":{
             "provider": {
                 "order": ["Fireworks"],
                 "ignore": ["Together", "DeepInfra", "Hyperbolic"],
             },
         },**filtered_kwargs}
+    
+    logger.info(f"Doubao Query Params:\n{model_params}\n")
+
+    completion = backoff_create_api(
+        # base_url="https://ark-cn-beijing.bytedance.net/api/v3",
+        # api_key=os.getenv("DOUBAO_API_KEY"),
+        model_params=model_params
     )   
     choice = completion.choices[0]
     logger.info(f"Response choice:{choice}")
