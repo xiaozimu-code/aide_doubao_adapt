@@ -142,8 +142,8 @@ def new_query(
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
 
     completion = backoff_create_api(
-        base_url="https://ark-cn-beijing.bytedance.net/api/v3",
-        api_key=os.getenv("DOUBAO_API_KEY"),
+        # base_url="https://ark-cn-beijing.bytedance.net/api/v3",
+        # api_key=os.getenv("DOUBAO_API_KEY"),
         model_params={"messages":messages,"extra_body":{
             "provider": {
                 "order": ["Fireworks"],

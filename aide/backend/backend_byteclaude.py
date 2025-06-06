@@ -77,7 +77,7 @@ def query(
     )
     choice = completion.choices[0]
     logger.info(f"Response choice:{choice}")
-    logger.info(f"Response choice:{choice}")
+    # logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
     if func_spec is None:
         output = choice.message.content

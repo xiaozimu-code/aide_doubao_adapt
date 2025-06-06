@@ -43,7 +43,7 @@ def clean_and_convert(response_dict):
     return ChatCompletion.model_validate(response_dict)
 
 # 与容器外通信传递Query Answer
-def backoff_create_api(base_url,api_key,model_params):
+def backoff_create_api(model_params):
      
     host_url = subprocess.check_output(
         ["sh", "-c", "ip route | awk '/default/ {print $3}'"]
@@ -53,7 +53,7 @@ def backoff_create_api(base_url,api_key,model_params):
     logger.info(f"forward server status \n{health_resp.text}")
     url = f"http://{host_url}:8192/call_model_api"
     try:
-        response = requests.post(url=url,json={"model_params":model_params},timeout=2700)
+        response = requests.post(url=url,json=model_params,timeout=2700)
         logger.info(f"forward response:\n{response.text}")
         completion = (response.json())["data"]
         chat_completion = clean_and_convert(completion)
