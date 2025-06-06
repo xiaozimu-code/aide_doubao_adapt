@@ -13,6 +13,29 @@ FunctionCallType = dict
 OutputType = str | FunctionCallType
 
 import backoff
+from enum import Enum
+from pydantic import BaseModel, root_validator
+
+class AgentOutputStatus(str, Enum):
+    NORMAL = "normal"
+    CANCELLED = "cancelled"
+    AGENT_CONTEXT_LIMIT = "agent context limit"
+
+
+class AgentOutput(BaseModel):
+    status: AgentOutputStatus = AgentOutputStatus.NORMAL
+    content: Union[str, None] = None
+    tools: Optional[List[Dict[str, Any]]] = None
+    tool_calls: Optional[List[Dict[str, Any]]] = None
+
+    # at least one of them should be not None
+    @root_validator(pre=False, skip_on_failure=True)
+    def post_validate(cls, instance: dict):
+        assert (
+                instance.get("status") is not AgentOutputStatus.NORMAL
+                or instance.get("content") is not None
+        ), "If status is NORMAL, content should not be None"
+        return instance
 
 logger = logging.getLogger("aide")
 
@@ -40,7 +63,9 @@ def clean_and_convert(response_dict):
             if choice.get('index') is None:
                 choice['index'] = i
     
-    return ChatCompletion.model_validate(response_dict)
+    # return ChatCompletion.model_validate(response_dict)
+    return AgentOutput.model_validate(response_dict)
+
 
 # 与容器外通信传递Query Answer
 def backoff_create_api(model_params):
@@ -55,8 +80,10 @@ def backoff_create_api(model_params):
     try:
         response = requests.post(url=url,json=model_params,timeout=2700)
         logger.info(f"forward response:\n{response.text}")
-        completion = (response.json())["data"]
-        chat_completion = clean_and_convert(completion)
+        # completion = (response.json())["data"]
+        # chat_completion = clean_and_convert(completion)
+        chat_completion = clean_and_convert(response)
+
     except Exception as e:
         logger.info(f"Backoff exception: {e}")
         logger.info(f"{traceback.format_exc()}")
