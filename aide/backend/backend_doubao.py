@@ -179,10 +179,10 @@ def new_query(
             # output = json.loads(choice.message.tool_calls[0].function.arguments)
             output = json.loads(completion["tool_calls"][0].function.arguments)
         except json.JSONDecodeError as e:
+            tool_calls = completion["tool_calls"][0].function.arguments
+            tool_type = type(tool_calls)
             logger.error(
                 # f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
-                tool_calls = completion["tool_calls"][0].function.arguments
-                tool_type = type(tool_calls)
                 f"Error decoding the function arguments: {tool_calls}\ntype:{tool_type}"
             )
             raise e
