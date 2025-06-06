@@ -81,7 +81,7 @@ def backoff_create_api(model_params):
     try:
         response = requests.post(url=url,json=model_params,timeout=2700)
         logger.info(f"forward response:\n{response.text}")
-        # completion = (response.json())["data"]
+        completion = response.json()
         # chat_completion = clean_and_convert(completion)
         # chat_completion = clean_and_convert(response)
 
@@ -89,7 +89,7 @@ def backoff_create_api(model_params):
         logger.info(f"Backoff exception: {e}")
         logger.info(f"{traceback.format_exc()}")
         return False
-    return response
+    return completion
 
 def opt_messages_to_list(
     system_message: str | None,
