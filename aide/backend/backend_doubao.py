@@ -191,14 +191,16 @@ def new_query(
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
 
-    in_tokens = completion.usage.prompt_tokens
-    out_tokens = completion.usage.completion_tokens
+    # in_tokens = completion.usage.prompt_tokens
+    # out_tokens = completion.usage.completion_tokens
+    in_tokens = ""
+    out_tokens = ""
+    # info = {
+    #     "system_fingerprint": completion.system_fingerprint,
+    #     "model": completion.model,
+    #     "created": completion.created,
+    # }
 
-    info = {
-        "system_fingerprint": completion.system_fingerprint,
-        "model": completion.model,
-        "created": completion.created,
-    }
-
-    return output, req_time, in_tokens, out_tokens, info
+    # return output, req_time, in_tok_count, out_tok_count, info
+    return output, req_time
 

@@ -81,7 +81,14 @@ def query(
 
     provider = determine_provider(model)
     query_func = provider_to_query_func[provider]
-    output, req_time, in_tok_count, out_tok_count, info = query_func(
+    # output, req_time, in_tok_count, out_tok_count, info = query_func(
+    #     system_message=system_message,
+    #     user_message=user_message,
+    #     func_spec=func_spec,
+    #     convert_system_to_user=convert_system_to_user,
+    #     **model_kwargs,
+    # )
+    output, req_time = query_func(
         system_message=system_message,
         user_message=user_message,
         func_spec=func_spec,
