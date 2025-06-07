@@ -191,7 +191,7 @@ def new_query(
         # api_key=os.getenv("DOUBAO_API_KEY"),
         model_params=model_params
     )   
-
+    logger.info(f"Merlin_Response:\n{completion}")
     # choice = completion.choices[0]
     # logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
@@ -199,10 +199,8 @@ def new_query(
         # output = choice.message.content
         output = completion["content"]
     else:
-        output = validate_fc(completion,func_spec)
-
-    logger.info(f"Merlin_Response:\n{completion}")
-    logger.info(f"Extract Output:\n{output}")
+        fc_status, output, errmsg = validate_fc(completion,func_spec)
+        logger.info(f"Fuction Call Status:{fc_status}\nExtract Output:\n{output}")
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
