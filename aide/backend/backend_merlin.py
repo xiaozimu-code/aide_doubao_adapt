@@ -134,9 +134,9 @@ def validate_fc(completion, func_spec):
     # 3. 尝试解析输出转为 JSON
     if fc_status:
         try:
-            output = json.loads(completion["tool_calls"][0].function.arguments)
+            output = json.loads(completion["tool_calls"][0]["function"]["arguments"])
         except json.JSONDecodeError as e:
-            tool_calls = completion["tool_calls"][0].function.arguments
+            tool_calls = completion["tool_calls"][0]["function"]["arguments"]
             tool_type = type(tool_calls)
             errmsg = (f"Error decoding the function arguments: {tool_calls}\n"
                       f"type:{tool_type} -> {e}")
