@@ -112,6 +112,40 @@ def query(
     return output, req_time, in_tokens, out_tokens, info
 
 
+# assert-raise流程替换，预防因没有传入tool_choice而没有进行工具调用的情况
+def validate_fc(completion, func_spec):
+
+    fc_status = True
+    errmsg = ""
+    output = ""
+
+    # 1. 检查是否带有 tool_calls
+    if not completion.get("tool_calls"):
+        errmsg = f"function_call is empty, it is not a function call: {completion}"
+        logger.warning(errmsg)
+        fc_status = False
+
+    # # 2. 检查函数名是否一致   tool列表只给了一个工具 理论上只要进行了工具调用就不会选错  先预留这个校验环节
+    # if success and completion["tool_calls"][0].function.name != func_spec.name:
+    #     errmsg = "Function name mismatch:\nchoice.message.tool_calls[0]"
+    #     logger.warning(errmsg)
+    #     success = False
+
+    # 3. 尝试解析输出转为 JSON
+    if fc_status:
+        try:
+            output = json.loads(completion["tool_calls"][0].function.arguments)
+        except json.JSONDecodeError as e:
+            tool_calls = completion["tool_calls"][0].function.arguments
+            tool_type = type(tool_calls)
+            errmsg = (f"Error decoding the function arguments: {tool_calls}\n"
+                      f"type:{tool_type} -> {e}")
+            logger.error(errmsg)
+            fc_status = False
+
+    return fc_status, output, errmsg
+
+
 # new query to post api
 def new_query(
     system_message: str | None,
@@ -136,12 +170,10 @@ def new_query(
     logger.info(f"func_spec:{func_spec}")
     logger.info(f"----DOUBAO Querying----")
     # logger.info(f"Doubao Query:\n{messages}\n")
-
-    # if func_spec is not None:
-
-    #     raise NotImplementedError(
-    #         "We are not supporting function calling in OpenRouter for now."
-    #     )
+    if func_spec is not None:
+        filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
+        # force the model the use the function
+        filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
         
     logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
 
@@ -160,15 +192,17 @@ def new_query(
         model_params=model_params
     )   
 
-    output = completion["content"]
-
-    logger.info(f"api_response:\n{completion}\ntype:{type(completion)}")
     # choice = completion.choices[0]
     # logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
+    if func_spec is None:
+        # output = choice.message.content
+        output = completion["content"]
+    else:
+        output = validate_fc(completion,func_spec)
 
-
-    logger.info(f"Doubao Response:\n{output}")
+    logger.info(f"Merlin_Response:\n{completion}")
+    logger.info(f"Extract Output:\n{output}")
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")

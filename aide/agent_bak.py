@@ -427,45 +427,32 @@ class Agent:
             ),
         )
         logger.info(f"Model Response:{response}\n{type(response)}")
-        # 因为传不了tool_choice 有可能会出现LLM不进行tool调用的情况，用if隔离 else为正常tool call的后续流程
-        if not isinstance(response,dict):
-            # metric = None
-            has_csv_submission = (
-                self.cfg.workspace_dir / "submission" / "submission.csv"
-            ).exists()
-            node.analysis = "非正常工具调用 流程置空"
-            node.is_buggy = True
+        # if the metric isn't a float then fill the metric with the worst metric
+        if not isinstance(response["metric"], float):
+            response["metric"] = None
+        # do an extra check, to catch cases where judge fails
+        has_csv_submission = (
+            self.cfg.workspace_dir / "submission" / "submission.csv"
+        ).exists()
+
+        node.analysis = response["summary"]
+        node.is_buggy = (
+            response["is_bug"]
+            or node.exc_type is not None
+            or response["metric"] is None
+            or response["has_csv_submission"] == False
+            or has_csv_submission == False
+        )
+
+        if node.is_buggy:
             logger.info(
-                    f"Parsed results: Node {node.id} is buggy and/or did not produce a submission.csv (非正常工具调用直接pass node)"
-                )
+                f"Parsed results: Node {node.id} is buggy and/or did not produce a submission.csv"
+            )
             node.metric = WorstMetricValue()
         else:
-            # if the metric isn't a float then fill the metric with the worst metric
-            if not isinstance(response["metric"], float):
-                response["metric"] = None
-            # do an extra check, to catch cases where judge fails
-            has_csv_submission = (
-                self.cfg.workspace_dir / "submission" / "submission.csv"
-            ).exists()
-
-            node.analysis = response["summary"]
-            node.is_buggy = (
-                response["is_bug"]
-                or node.exc_type is not None
-                or response["metric"] is None
-                or response["has_csv_submission"] == False
-                or has_csv_submission == False
+            logger.info(f"Parsed results: Node {node.id} is not buggy")
+            node.metric = MetricValue(
+                response["metric"], maximize=not response["lower_is_better"]
             )
-
-            if node.is_buggy:
-                logger.info(
-                    f"Parsed results: Node {node.id} is buggy and/or did not produce a submission.csv"
-                )
-                node.metric = WorstMetricValue()
-            else:
-                logger.info(f"Parsed results: Node {node.id} is not buggy")
-                node.metric = MetricValue(
-                    response["metric"], maximize=not response["lower_is_better"]
-                )
 
         return node
