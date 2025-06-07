@@ -1,4 +1,4 @@
-"""Backend for OpenRouter(DOUBAO) API"""
+"""Backend for Merlin API"""
 
 import logging
 import os
@@ -137,9 +137,12 @@ def new_query(
     logger.info(f"----DOUBAO Querying----")
     # logger.info(f"Doubao Query:\n{messages}\n")
     if func_spec is not None:
-        filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
-        # force the model the use the function
-        filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
+        # filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
+        # # force the model the use the function
+        # filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
+        raise NotImplementedError(
+            "We are not supporting function calling in OpenRouter for now."
+        )
         
     logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
 
@@ -158,35 +161,14 @@ def new_query(
         model_params=model_params
     )   
 
+    output = completion["content"]
+    
     logger.info(f"api_response:\n{completion}\ntype:{type(completion)}")
     # choice = completion.choices[0]
     # logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0
-    if func_spec is None:
-        # output = choice.message.content
-        output = completion["content"]
-    else:
-        assert (
-            # choice.message.tool_calls
-            completion["tool_calls"]
-        # ), f"function_call is empty, it is not a function call: {choice.message}"
-        ), f"function_call is empty, it is not a function call: {completion}"
 
-        assert (
-            # choice.message.tool_calls[0].function.name == func_spec.name
-            completion["tool_calls"][0]
-        ), "Function name mismatch:\nchoice.message.tool_calls[0]"
-        try:
-            # output = json.loads(choice.message.tool_calls[0].function.arguments)
-            output = json.loads(completion["tool_calls"][0].function.arguments)
-        except json.JSONDecodeError as e:
-            tool_calls = completion["tool_calls"][0].function.arguments
-            tool_type = type(tool_calls)
-            logger.error(
-                # f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
-                f"Error decoding the function arguments: {tool_calls}\ntype:{tool_type}"
-            )
-            raise e
+
     logger.info(f"Doubao Response:\n{output}")
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")

@@ -1,5 +1,5 @@
 import logging
-from . import backend_anthropic, backend_openai, backend_openrouter, backend_gdm, backend_doubao, backend_bytegpt, backend_byteclaude
+from . import backend_anthropic, backend_openai, backend_openrouter, backend_gdm, backend_doubao, backend_bytegpt, backend_byteclaude , backend_merlin
 from .utils import FunctionSpec, OutputType, PromptType, compile_prompt_to_md
 
 logger = logging.getLogger("aide")
@@ -30,7 +30,8 @@ provider_to_query_func = {
     "gdm": backend_gdm.query,
     "openrouter": backend_openrouter.query,
     # "doubao": backend_doubao.query,
-    "doubao": backend_doubao.new_query,
+    # "doubao": backend_doubao.new_query,
+    "doubao" : backend_merlin.new_query,
     "bytegpt": backend_bytegpt.query,
     "byteclaude": backend_byteclaude.query,
 }
