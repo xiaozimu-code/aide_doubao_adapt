@@ -136,13 +136,12 @@ def new_query(
     logger.info(f"func_spec:{func_spec}")
     logger.info(f"----DOUBAO Querying----")
     # logger.info(f"Doubao Query:\n{messages}\n")
-    if func_spec is not None:
-        # filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
-        # # force the model the use the function
-        # filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
-        raise NotImplementedError(
-            "We are not supporting function calling in OpenRouter for now."
-        )
+
+    # if func_spec is not None:
+
+    #     raise NotImplementedError(
+    #         "We are not supporting function calling in OpenRouter for now."
+    #     )
         
     logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
 
@@ -162,7 +161,7 @@ def new_query(
     )   
 
     output = completion["content"]
-    
+
     logger.info(f"api_response:\n{completion}\ntype:{type(completion)}")
     # choice = completion.choices[0]
     # logger.info(f"Response choice:{choice}")
