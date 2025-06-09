@@ -75,10 +75,10 @@ def backoff_create_api(model_params):
     host_url = subprocess.check_output(
         ["sh", "-c", "ip route | awk '/default/ {print $3}'"]
     ).decode().strip()
-    logger.info(f"get host url :\n{host_url}")
+    logger.info(f"get host url : {host_url}")
     forward_server_port = os.environ.get('FORWARD_PORT')
     health_resp = requests.get(url = f"http://{host_url}:{forward_server_port}/health")
-    logger.info(f"forward server status \n{health_resp.text}")
+    logger.info(f"forward server status : {health_resp.text}")
     url = f"http://{host_url}:{forward_server_port}/call_model_api"
     try:
         response = requests.post(url=url,json=model_params,timeout=2700)

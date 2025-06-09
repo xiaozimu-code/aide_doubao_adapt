@@ -4,36 +4,39 @@ from .utils import FunctionSpec, OutputType, PromptType, compile_prompt_to_md
 
 logger = logging.getLogger("aide")
 
-
+# 从merlin平台发起 不需要set_up client 用转发服务桥接云主机-merlin
 def determine_provider(model: str) -> str:
     # if model.startswith("gpt-") or model.startswith("o1-"):
     #     return "openai"
     # byte's gpt api
-    if model.startswith("gpt-") or model.startswith("o1"):
-        return "bytegpt"
-    # elif model.startswith("claude-"):
-    #     return "anthropic"
-    elif model.startswith("gemini-"):
-        return "gdm"
-    elif model.startswith("ep"):  # ep-20250122135449-rhvk6
-        return "doubao"
-    elif model.startswith("anthropic"):
-        return "byteclaude"
-    # all other models are handle by openrouter
+    # if model.startswith("gpt-") or model.startswith("o1"):
+    #     return "bytegpt"
+    # # elif model.startswith("claude-"):
+    # #     return "anthropic"
+    # elif model.startswith("gemini-"):
+    #     return "gdm"
+    # elif model.startswith("ep"):  # ep-20250122135449-rhvk6
+    #     return "doubao"
+    # elif model.startswith("anthropic"):
+    #     return "byteclaude"
+    # # all other models are handle by openrouter
+    if model.startswith("merlin"):
+        return "merlin"
     else:
-        return "openrouter"
+        return "merlin"
 
 
 provider_to_query_func = {
-    "openai": backend_openai.query,
-    "anthropic": backend_anthropic.query,
-    "gdm": backend_gdm.query,
-    "openrouter": backend_openrouter.query,
-    # "doubao": backend_doubao.query,
-    # "doubao": backend_doubao.new_query,
-    "doubao" : backend_merlin.new_query,
-    "bytegpt": backend_bytegpt.query,
-    "byteclaude": backend_byteclaude.query,
+    # "openai": backend_openai.query,
+    # "anthropic": backend_anthropic.query,
+    # "gdm": backend_gdm.query,
+    # "openrouter": backend_openrouter.query,
+    # # "doubao": backend_doubao.query,
+    # # "doubao": backend_doubao.new_query,
+    # "doubao" : backend_doubao.new_query,
+    # "bytegpt": backend_bytegpt.query,
+    # "byteclaude": backend_byteclaude.query,
+    "merlin": backend_merlin.new_query
 }
 
 

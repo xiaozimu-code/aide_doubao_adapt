@@ -58,8 +58,8 @@ def query(
     t0 = time.time()
     # print(f"----DOUBAO Querying----")
     logger.info(f"func_spec:{func_spec}")
-    logger.info(f"----DOUBAO Querying----")
-    logger.info(f"Doubao Query:\n{messages}\n")
+    logger.info(f"----Merlin Querying----")
+    logger.info(f"Merlin Query:\n{messages}\n")
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
@@ -95,7 +95,7 @@ def query(
                 f"Error decoding the function arguments: {choice.message.tool_calls[0].function.arguments}\ntype:{type(choice.message.tool_calls[0].function.arguments)}"
             )
             raise e
-    logger.info(f"Doubao Response:\n{output}")
+    logger.info(f"Merlin Response:\n{output}")
     # output = completion.choices[0].message.content
     # print(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
     # logger.info(f"----DOUBAO Response:{output}\ntype:{type(output)}----")
@@ -168,8 +168,7 @@ def new_query(
     t0 = time.time()
     # print(f"----DOUBAO Querying----")
     logger.info(f"func_spec:{func_spec}")
-    logger.info(f"----DOUBAO Querying----")
-    # logger.info(f"Doubao Query:\n{messages}\n")
+    logger.info(f"----Merlin Querying----")
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
@@ -184,14 +183,14 @@ def new_query(
             },
         },**filtered_kwargs}
     
-    logger.info(f"Doubao Query Params:\n{model_params}\n")
+    logger.info(f"Merlin Query Params:\n{model_params}\n")
 
     completion = backoff_create_api(
         # base_url="https://ark-cn-beijing.bytedance.net/api/v3",
         # api_key=os.getenv("DOUBAO_API_KEY"),
         model_params=model_params
     )   
-    logger.info(f"Merlin_Response:\n{completion}")
+    logger.info(f"Merlin Response:\n{completion}")
     # choice = completion.choices[0]
     # logger.info(f"Response choice:{choice}")
     req_time = time.time() - t0

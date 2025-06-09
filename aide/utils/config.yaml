@@ -45,13 +45,15 @@ agent:
   # LLM settings for coding
   code:
     # model: gpt-4-turbo
-    model: ep-20250122135449-rhvk6
+    # model: ep-20250122135449-rhvk6
+    model: merlin
     temp: 0.5
 
   # LLM settings for evaluating program output / tracebacks
   feedback:
     # model: gpt-4-turbo
-    model: ep-20250122135449-rhvk6
+    # model: ep-20250122135449-rhvk6
+    model: merlin
     temp: 0.5
 
   # hyperparameters for the tree search
