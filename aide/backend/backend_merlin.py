@@ -174,7 +174,7 @@ def new_query(
         # force the model the use the function
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
         
-    logger.info(f"log info filtered_kwargs:\n{filtered_kwargs}\n")
+    logger.info(f"filtered_kwargs:\n{filtered_kwargs}\n")
 
     model_params={"messages":messages,"extra_body":{
             "provider": {
