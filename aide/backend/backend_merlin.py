@@ -167,14 +167,14 @@ def new_query(
 
     t0 = time.time()
     # print(f"----DOUBAO Querying----")
-    logger.info(f"func_spec:{func_spec}")
+    # logger.info(f"func_spec:{func_spec}")
     logger.info(f"----Merlin Querying----")
     if func_spec is not None:
         filtered_kwargs["tools"] = [func_spec.as_openai_tool_dict]
         # force the model the use the function
         filtered_kwargs["tool_choice"] = func_spec.openai_tool_choice_dict
         
-    logger.info(f"filtered_kwargs:\n{filtered_kwargs}\n")
+    # logger.info(f"filtered_kwargs:\n{filtered_kwargs}\n")
 
     model_params={"messages":messages,"extra_body":{
             "provider": {
