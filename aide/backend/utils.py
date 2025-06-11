@@ -87,7 +87,7 @@ def backoff_create_api(model_params):
         # chat_completion = clean_and_convert(completion)
         # chat_completion = clean_and_convert(response)
         if "error_message" in completion:
-            logger.info(f"forward server status : {completion["error_message"]}")
+            logger.info(f"forward server status : {completion}")
     except Exception as e:
         logger.info(f"Backoff exception: {e}")
         logger.info(f"{traceback.format_exc()}")
