@@ -279,8 +279,12 @@ class Interpreter:
                     # terminate if we're overtime by more than a minute
                     if running_time > self.timeout + 60:
                         logger.warning("Child failed to terminate, killing it..")
-                        self.cleanup_session()
-
+                        try:
+                            self.cleanup_session()
+                            # 从任务逻辑上看，应该是每一步有单独的超时限制
+                            logger.info("killing over")
+                        except: # 
+                            logger.warning("kill process fail")
                         state = (None, "TimeoutError", {}, [])
                         exec_time = self.timeout
                         break
