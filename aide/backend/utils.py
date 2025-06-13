@@ -81,7 +81,7 @@ def backoff_create_api(model_params):
     logger.info(f"forward server status : {health_resp.text}")
     url = f"http://{host_url}:{forward_server_port}/call_model_api"
     try:
-        response = requests.post(url=url,json=model_params,timeout=2700)
+        response = requests.post(url=url,json=model_params,timeout=5400)
         # logger.info(f"forward response:\n{response.text}")
         completion = response.json()
         # chat_completion = clean_and_convert(completion)
