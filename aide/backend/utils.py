@@ -77,10 +77,11 @@ def backoff_create_api(model_params):
     ).decode().strip()
     logger.info(f"get host url : {host_url}")
     forward_server_port = os.environ.get('FORWARD_PORT')
-    health_resp = requests.get(url = f"http://{host_url}:{forward_server_port}/health")
-    logger.info(f"forward server status : {health_resp.text}")
     url = f"http://{host_url}:{forward_server_port}/call_model_api"
+    completion = {"content":"completion手动初始化,接收到该值即模型调用失败！"}
     try:
+        health_resp = requests.get(url = f"http://{host_url}:{forward_server_port}/health")
+        logger.info(f"forward server status : {health_resp.text}")
         response = requests.post(url=url,json=model_params,timeout=5400)
         # logger.info(f"forward response:\n{response.text}")
         completion = response.json()
